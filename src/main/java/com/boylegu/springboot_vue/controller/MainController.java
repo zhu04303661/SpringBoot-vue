@@ -1,28 +1,31 @@
 package com.boylegu.springboot_vue.controller;
 
+import com.boylegu.springboot_vue.controller.pagination.PaginationFormatting;
+import com.boylegu.springboot_vue.controller.pagination.PaginationMultiTypeValuesHelper;
+import com.boylegu.springboot_vue.controller.util.ExcelImportUtils;
+import com.boylegu.springboot_vue.dao.PersonsRepository;
 import com.boylegu.springboot_vue.entities.Persons;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Value;
+import com.boylegu.springboot_vue.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
-import com.boylegu.springboot_vue.dao.PersonsRepository;
-import com.boylegu.springboot_vue.controller.pagination.PaginationMultiTypeValuesHelper;
-import com.boylegu.springboot_vue.controller.pagination.PaginationFormatting;
-
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -32,8 +35,60 @@ public class MainController {
     @Autowired
     private PersonsRepository personsRepository;
 
+    @Autowired
+    ExcelService excelService;
+
     @Value(("${com.boylegu.paginatio.max-per-page}"))
     Integer maxPerPage;
+
+
+    //处理文件上传
+    @RequestMapping(value="/testuploadimg", method = RequestMethod.POST)
+    public @ResponseBody String uploadImg(@RequestParam("file") MultipartFile file,
+                                          HttpServletRequest request, HttpServletResponse response, HttpSession session
+                                         ) throws IOException {
+
+        //判断文件是否为空
+        if(file==null){
+            session.setAttribute("msg","文件不能为空！");
+            return "redirect:toUserKnowledgeImport";
+        }
+        //获取文件名
+        String fileName=file.getOriginalFilename();
+
+        //验证文件名是否合格
+        if(!ExcelImportUtils.validateExcel(fileName)){
+            session.setAttribute("msg","文件必须是excel格式！");
+            return "redirect:toUserKnowledgeImport";
+        }
+
+        //进一步判断文件内容是否为空（即判断其大小是否为0或其名称是否为null）
+        long size=file.getSize();
+        if(StringUtils.isEmpty(fileName) || size==0){
+            session.setAttribute("msg","文件不能为空！");
+            return "redirect:toUserKnowledgeImport";
+        }
+        //批量导入
+        String message =excelService.batchImport(fileName,file);
+        session.setAttribute("msg",message);
+        return "redirect:toUserKnowledgeImport";
+
+//        String contentType = file.getContentType();
+//        String fileName = file.getOriginalFilename();
+//        /*System.out.println("fileName-->" + fileName);
+//        System.out.println("getContentType-->" + contentType);*/
+//        String filePath = request.getSession().getServletContext().getRealPath("imgupload/");
+//        try {
+//            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+//
+//        } catch (Exception e) {
+//            // TODO: handle exception
+//        }
+//        //返回json
+//        return "uploadimg success";
+    }
+
+
 
     @RequestMapping(value = "/sex", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSexAll() {
