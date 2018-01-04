@@ -1,17 +1,14 @@
 package com.boylegu.springboot_vue.service;
 
-import cn.leancloud.LeanEngine;
-import com.avos.avoscloud.*;
-import com.sun.tools.javac.comp.Todo;
-import groovy.lang.Singleton;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class LeanCloud {
@@ -36,58 +33,60 @@ public class LeanCloud {
         }
             return instance;
     }
-    public boolean creatTable(String tableName){
+    public boolean creatTable(String tableName) throws AVException {
         // 构造方法传入的参数，对应的就是控制台中的 Class Name
-        AVObject todo = new AVObject(tableName);
+        AVObject testObject = new AVObject(tableName);
+        testObject.put("words","init");
+        testObject.save();
+
         return true;
     }
 
-    public static List<Todo> getNotes( int offset) throws AVException {
-        AVQuery<Todo> query = AVObject.getQuery(Todo.class);
-        query.orderByDescending("createdAt");
-        query.include("createdAt");
-        query.skip(offset);
-        try {
-            return query.find();
-        } catch (AVException e) {
-            if (e.getCode() == 101) {
-                // 该错误的信息为：{ code: 101, message: 'Class or object doesn\'t exists.' }，说明 Todo 数据表还未创建，所以返回空的
-                // Todo 列表。
-                // 具体的错误代码详见：https://leancloud.cn/docs/error_code.html
-                return new ArrayList<>();
-            }
-            throw e;
-        }
-    }
 
-    protected void doGet(String offsetParam)
-            throws  IOException {
-//        String offsetParam = req.getParameter("offset");
-        int offset = 0;
-        if (!AVUtils.isBlankString(offsetParam)) {
-            offset = Integer.parseInt(offsetParam);
-        }
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("offset", offset);
-        try {
-            List<Todo> data = AVCloud.rpcFunction("list", params);
-//            req.setAttribute("todos", data);
 
-        } catch (AVException e) {
+    public List<AVObject> doGet(int limt, String table)
+            throws IOException, AVException {
+        try {
+            AVQuery<AVObject> query = new AVQuery<>(table);
+            Date now = new Date();
+            query.whereLessThanOrEqualTo("createdAt", now);//查询今天之前创建的 Todo
+            query.limit(limt);// 最多返回 10 条结果
+
+            List<AVObject> list = query.find();
+            return list;
+        }catch (AVException e) {
             e.printStackTrace();
         }
-//        req.getRequestDispatcher("/todos.jsp").forward(req, resp);
+
+        return null;
+
+    }
+
+    public AVObject doGetObjectById( String objectId , String table)
+            throws IOException, AVException {
+        try {
+//            String objectId = "558e20cbe4b060308e3eb36c";
+            AVQuery<AVObject> avQuery = new AVQuery<>(table);
+            AVObject object = avQuery.get(objectId);
+
+            return object;
+        }catch (AVException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 
 
-    protected void doPost(String content)
-            throws  IOException {
-//        String content = req.getParameter("content");
-
+public void doPost(String content, String table)
+            throws IOException {
         try {
-            AVObject note = new Todo();
-            note.put("content", content);
-            note.save();
+            AVObject todoFolder = new AVObject(table);// 构建对象
+            todoFolder.put("name", "工作");// 设置名称
+            todoFolder.put("priority", 1);// 设置优先级
+            todoFolder.save();// 保存到服务端
+
         } catch (AVException e) {
             e.printStackTrace();
         }

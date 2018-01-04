@@ -1,11 +1,15 @@
 package com.boylegu.springboot_vue.controller;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.boylegu.springboot_vue.controller.pagination.PaginationFormatting;
 import com.boylegu.springboot_vue.controller.pagination.PaginationMultiTypeValuesHelper;
 import com.boylegu.springboot_vue.controller.util.ExcelImportUtils;
 import com.boylegu.springboot_vue.dao.PersonsRepository;
 import com.boylegu.springboot_vue.entities.Persons;
 import com.boylegu.springboot_vue.service.ExcelService;
+import com.boylegu.springboot_vue.service.LeanCloud;
+import com.boylegu.springboot_vue.service.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,8 +45,32 @@ public class MainController {
     @Autowired
     ExcelService excelService;
 
+    @Autowired
+    LeanCloud leanCloud;
+
     @Value(("${com.boylegu.paginatio.max-per-page}"))
     Integer maxPerPage;
+
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    ModelAndView listTodo(@RequestParam(required = false, defaultValue = "20") int limit)
+            throws AVException, IOException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("limit", limit);
+//        List<Todo> todos = AVCloud.rpcFunction("listTodo", params);
+        List<Todo> todos = new ArrayList<>();
+//        leanCloud.creatTable("project2");
+//        leanCloud.doPost("test","project2");
+        List<AVObject> t = leanCloud.doGet("10","project1");
+        return new ModelAndView("todos/list", "todos", todos);
+    }
+
+    @RequestMapping(path = "/", method = RequestMethod.POST)
+    ModelAndView saveTodo(String content, RedirectAttributes redirectAttrs) throws AVException {
+        Todo todo = new Todo();
+        todo.setContent(content);
+        todo.save();
+        return new ModelAndView("redirect:/todos/");
+    }
 
 
     //处理文件上传
