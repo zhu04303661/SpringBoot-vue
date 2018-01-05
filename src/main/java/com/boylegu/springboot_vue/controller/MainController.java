@@ -60,7 +60,7 @@ public class MainController {
         List<Todo> todos = new ArrayList<>();
 //        leanCloud.creatTable("project2");
 //        leanCloud.doPost("test","project2");
-        List<AVObject> t = leanCloud.doGet("10","project1");
+        List<AVObject> t = leanCloud.doGet(10,"project1");
         return new ModelAndView("todos/list", "todos", todos);
     }
 
