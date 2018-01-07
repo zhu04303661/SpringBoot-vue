@@ -2,7 +2,7 @@ package com.boylegu.springboot_vue.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ctrip.mcdCommon.annotations.ExcelColumn;
+//import com.ctrip.mcdCommon.annotations.ExcelColumn;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -356,8 +356,8 @@ public class ExcelUtils {
 			outFile.close();
 			
 			List<TestExcelData> inData=readFromExcel(excel,TestExcelData.class);
-			String str=MCDJsonUtil.Serialize(inData);
-			System.out.println(str);
+//			String str=MCDJsonUtil.Serialize(inData);
+//			System.out.println(str);
 		}  catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
