@@ -68,12 +68,14 @@ public class MainController {
 //        leanCloud.creatTable("project2");
 //        leanCloud.doPost("test","project2");
         List<AVObject> t = leanCloud.doGet(10,"project1");
+
         List<AVObject> t2=tableProjo.doGet(10);
         Table1 table1 = new Table1();
         table1.setName("test");
         table1.setPhone("121212");
         table1.setDescription("test1");
         tableProjo.doPost(table1);
+
         return new ModelAndView("todos/list", "todos", todos);
     }
 
