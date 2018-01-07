@@ -115,7 +115,8 @@ public class MainController {
             return "redirect:toUserKnowledgeImport";
         }
         //批量导入
-        String message =excelService.batchImport(fileName,file);
+        List<Table1>  message =excelService.batchImport(fileName,file);
+
         session.setAttribute("msg",message);
         return "redirect:toUserKnowledgeImport";
 

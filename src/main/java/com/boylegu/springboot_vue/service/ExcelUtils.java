@@ -158,28 +158,28 @@ public class ExcelUtils {
 
 		String []columnNames=new String[fields.length];
 		String []keys=new String[fields.length];
-		for (int i=0;i<fields.length;i++) {
-
-			ExcelColumn column=fields[i].getReadMethod().getAnnotation(ExcelColumn.class);
-			if(column==null||column.name()==null){
-				columnNames[i]=fields[i].getName();
-			}else{
-				columnNames[i]=column.name();
-			}
-			keys[i]=fields[i].getName();
-		}
-		for(T d : data){
-			Map<String, Object> dMap=new HashMap<String, Object>();
-			for (PropertyDescriptor field : fields) {
-				try {
-					dMap.put(field.getName(), field.getReadMethod().invoke(d));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			dataList.add(dMap);
-		}
+//		for (int i=0;i<fields.length;i++) {
+//
+//			ExcelColumn column=fields[i].getReadMethod().getAnnotation(ExcelColumn.class);
+//			if(column==null||column.name()==null){
+//				columnNames[i]=fields[i].getName();
+//			}else{
+//				columnNames[i]=column.name();
+//			}
+//			keys[i]=fields[i].getName();
+//		}
+//		for(T d : data){
+//			Map<String, Object> dMap=new HashMap<String, Object>();
+//			for (PropertyDescriptor field : fields) {
+//				try {
+//					dMap.put(field.getName(), field.getReadMethod().invoke(d));
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			dataList.add(dMap);
+//		}
 		return createWorkBook(dataList,keys,columnNames);
 	}
 
