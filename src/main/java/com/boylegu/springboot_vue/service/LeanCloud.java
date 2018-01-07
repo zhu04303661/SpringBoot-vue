@@ -4,9 +4,11 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.boylegu.springboot_vue.LeanCloud.Table1;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 
@@ -79,7 +81,7 @@ public class LeanCloud {
     }
 
 
-public void doPost(String content, String table)
+    public void doPost(String content, String table)
             throws IOException {
         try {
             AVObject todoFolder = new AVObject(table);// 构建对象
@@ -90,7 +92,9 @@ public void doPost(String content, String table)
         } catch (AVException e) {
             e.printStackTrace();
         }
-//        resp.sendRedirect("/todos");
     }
+
+
+
 
 }

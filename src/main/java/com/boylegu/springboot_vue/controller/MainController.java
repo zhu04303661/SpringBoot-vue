@@ -2,6 +2,8 @@ package com.boylegu.springboot_vue.controller;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.boylegu.springboot_vue.LeanCloud.Table1;
+import com.boylegu.springboot_vue.LeanCloud.TableProjo;
 import com.boylegu.springboot_vue.controller.pagination.PaginationFormatting;
 import com.boylegu.springboot_vue.controller.pagination.PaginationMultiTypeValuesHelper;
 import com.boylegu.springboot_vue.controller.util.ExcelImportUtils;
@@ -35,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/persons")
 public class MainController {
@@ -48,19 +52,28 @@ public class MainController {
     @Autowired
     LeanCloud leanCloud;
 
+    @Autowired
+    TableProjo tableProjo;
+
     @Value(("${com.boylegu.paginatio.max-per-page}"))
     Integer maxPerPage;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     ModelAndView listTodo(@RequestParam(required = false, defaultValue = "20") int limit)
-            throws AVException, IOException {
+            throws AVException, IOException, IllegalAccessException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("limit", limit);
 //        List<Todo> todos = AVCloud.rpcFunction("listTodo", params);
         List<Todo> todos = new ArrayList<>();
 //        leanCloud.creatTable("project2");
 //        leanCloud.doPost("test","project2");
-        List<AVObject> t = leanCloud.doGet("10","project1");
+        List<AVObject> t = leanCloud.doGet(10,"project1");
+        List<AVObject> t2=tableProjo.doGet(10);
+        Table1 table1 = new Table1();
+        table1.setName("test");
+        table1.setPhone("121212");
+        table1.setDescription("test1");
+        tableProjo.doPost(table1);
         return new ModelAndView("todos/list", "todos", todos);
     }
 

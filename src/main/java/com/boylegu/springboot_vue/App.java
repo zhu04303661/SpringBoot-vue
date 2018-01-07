@@ -11,9 +11,11 @@ import org.springframework.context.annotation.Configuration;
 public class App {
 
 	public static void main(String[] args) {
-		SpringApplication.run(App.class, args);
 
 		AVOSCloud.initialize("Eul6rG90rOjIO5imP853JOmn-gzGzoHsz","XdmDTh1MQGHCYrJjp1B5Jyh1","8f51dePoE2N9xItvT0jp5jHB");
 		AVOSCloud.setDebugLogEnabled(true);
+
+		SpringApplication.run(App.class, args);
+
 	}
 }

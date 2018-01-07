@@ -27,11 +27,13 @@ public class ExcelService {
      */
     public String batchImport(String fileName, MultipartFile mfile){
 
-        File uploadDir = new File("E:\\fileupload");
+//        File uploadDir = new File("E:\\fileupload");
+        File uploadDir = new File("/tmp/fileupload/");
         //创建一个目录 （它的路径名由当前 File 对象指定，包括任一必须的父路径。）
         if (!uploadDir.exists()) uploadDir.mkdirs();
         //新建一个文件
-        File tempFile = new File("E:\\fileupload\\" + new Date().getTime() + ".xlsx");
+//        File tempFile = new File("E:\\fileupload\\" + new Date().getTime() + ".xlsx");
+        File tempFile = new File("/tmp/fileupload/" + new Date().getTime() + ".xlsx");
         //初始化输入流
         InputStream is = null;
         try{
