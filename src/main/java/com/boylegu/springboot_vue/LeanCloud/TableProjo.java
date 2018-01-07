@@ -9,6 +9,7 @@ import java.io.IOException;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +49,35 @@ public class TableProjo {
         }
     }
 
+    public void doPostAll(List<Table1> contentList)
+            throws IOException , IllegalArgumentException, IllegalAccessException{
+
+
+
+        try {
+//            AVObject todoFolder = new AVObject(tableName);// 构建对象
+
+            List<AVObject> todos = new ArrayList<>();
+
+
+            for(Table1 content:contentList){
+                AVObject todo =  new AVObject(tableName);
+                Field[] fields = content.getClass().getDeclaredFields();
+                for (int i = 0; i < fields.length; i++) {
+                    todo.put(fields[i].getName(), fields[i].get(content));// 设置名称
+                }
+                todos.add(todo);
+            }
+
+
+            AVObject.saveAll(todos);// 保存到服务端
+
+
+        } catch (AVException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<AVObject> doGet(int limt)
             throws IOException, AVException {
         try {
@@ -63,6 +93,30 @@ public class TableProjo {
         }
 
         return null;
+
+    }
+    public  List<Table1> doTableGet() throws IOException, AVException {
+
+        List<Table1> table1s = new ArrayList<>();
+        List<AVObject> avObjects = doGet(10);
+
+        for(AVObject avObject : avObjects){
+            Table1 table1 = new Table1();
+//            Field[] fields = table1.getClass().getDeclaredFields();
+
+            table1.setName(avObject.getString("name"));
+            table1.setPhone(avObject.getString("phone"));
+            table1.setDescription(avObject.getString("description"));
+
+//            // 获取三个特殊属性
+//            String objectId = avObject.getObjectId();
+//            Date updatedAt = avObject.getUpdatedAt();
+//            Date createdAt = avObject.getCreatedAt();
+
+            table1s.add(table1);
+        }
+        return  table1s;
+
 
     }
 }

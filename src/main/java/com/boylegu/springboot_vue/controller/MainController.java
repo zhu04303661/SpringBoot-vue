@@ -59,40 +59,23 @@ public class MainController {
     Integer maxPerPage;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    ModelAndView listTodo(@RequestParam(required = false, defaultValue = "20") int limit)
+    List<Table1> listTodo(@RequestParam(required = false, defaultValue = "20") int limit)
             throws AVException, IOException, IllegalAccessException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("limit", limit);
-//        List<Todo> todos = AVCloud.rpcFunction("listTodo", params);
-        List<Todo> todos = new ArrayList<>();
-//        leanCloud.creatTable("project2");
-//        leanCloud.doPost("test","project2");
-        List<AVObject> t = leanCloud.doGet(10,"project1");
+        List<Table1> todos = new ArrayList<>();
+        todos = tableProjo.doTableGet();
 
-        List<AVObject> t2=tableProjo.doGet(10);
-        Table1 table1 = new Table1();
-        table1.setName("test");
-        table1.setPhone("121212");
-        table1.setDescription("test1");
-        tableProjo.doPost(table1);
-
-        return new ModelAndView("todos/list", "todos", todos);
+        return todos;
     }
 
-    @RequestMapping(path = "/", method = RequestMethod.POST)
-    ModelAndView saveTodo(String content, RedirectAttributes redirectAttrs) throws AVException {
-        Todo todo = new Todo();
-        todo.setContent(content);
-        todo.save();
-        return new ModelAndView("redirect:/todos/");
-    }
 
 
     //处理文件上传
     @RequestMapping(value="/testuploadimg", method = RequestMethod.POST)
     public @ResponseBody String uploadImg(@RequestParam("file") MultipartFile file,
                                           HttpServletRequest request, HttpServletResponse response, HttpSession session
-                                         ) throws IOException {
+                                         ) throws IOException, IllegalAccessException {
 
         //判断文件是否为空
         if(file==null){
@@ -116,23 +99,10 @@ public class MainController {
         }
         //批量导入
         List<Table1>  message =excelService.batchImport(fileName,file);
+        tableProjo.doPostAll(message);
 
-        session.setAttribute("msg",message);
-        return "redirect:toUserKnowledgeImport";
 
-//        String contentType = file.getContentType();
-//        String fileName = file.getOriginalFilename();
-//        /*System.out.println("fileName-->" + fileName);
-//        System.out.println("getContentType-->" + contentType);*/
-//        String filePath = request.getSession().getServletContext().getRealPath("imgupload/");
-//        try {
-//            FileUtil.uploadFile(file.getBytes(), filePath, fileName);
-//
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//        }
-//        //返回json
-//        return "uploadimg success";
+        return "uploadimg success";
     }
 
 

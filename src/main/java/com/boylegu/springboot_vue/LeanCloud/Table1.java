@@ -5,7 +5,8 @@ import com.avos.avoscloud.AVObject;
 /**
  * Created by zhuenqing on 2018/1/6.
  */
-public class Table1 extends AVObject {
+//public class Table1 extends AVObject {
+public class Table1  {
     String name;
     String phone;
     String description;
