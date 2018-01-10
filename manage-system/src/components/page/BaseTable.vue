@@ -17,11 +17,11 @@
         </div>
         <el-table :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="date" label="日期" sortable width="150">
-            </el-table-column>
+            <!--<el-table-column prop="date" label="日期" sortable width="150">-->
+            <!--</el-table-column>-->
             <el-table-column prop="name" label="姓名" width="120">
             </el-table-column>
-            <el-table-column prop="address" label="地址" :formatter="formatter">
+            <el-table-column prop="phone" label="地址" :formatter="formatter">
             </el-table-column>
             <el-table-column label="操作" width="180">
                 <template scope="scope">
@@ -71,7 +71,7 @@
                         }
                     }
                     if(!is_del){
-                        if(d.address.indexOf(self.select_cate) > -1 && 
+                        if(d.address.indexOf(self.select_cate) > -1 &&
                             (d.name.indexOf(self.select_word) > -1 ||
                             d.address.indexOf(self.select_word) > -1)
                         ){
@@ -89,7 +89,8 @@
             getData(){
                 let self = this;
                 if(process.env.NODE_ENV === 'development'){
-                    self.url = '/ms/table/list';
+//                    self.url = '/ms/table/list';
+                    self.url = 'http://localhost:8000/api/persons/';
                 };
                 self.$axios.post(self.url, {page:self.cur_page}).then((res) => {
                     self.tableData = res.data.list;
