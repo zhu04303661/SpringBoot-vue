@@ -195,6 +195,8 @@ Webpack提供了一整套前端工程自动化的解决方案
 ### 使用
 
 - 运行Spring Boot后端服务
+        cd springboot_vue
+        mvn clean install -Dmaven.test.skip=true
 
         cd springboot_vue/target/
 
@@ -212,28 +214,8 @@ Webpack提供了一整套前端工程自动化的解决方案
 
 > 你也可以在生产环境中运行`cd springboot_vue/frontend;npm run build`进行编译并配合Nginx
         
-## 未来计划
 
-本项目可以作为工作参考、学习或者教学演示，之后将陆续以版本的形式，即每个版本都会新增不同的功能演示项，不定期进行发布更新，有以下功能已经在计划之中：
 
-1. 用户认证
-2. 引入更高级的vuex组件通信机制
-3. 演示vue-route的使用
-4. 加入docker部署环境
-5. 新增针对yarn的支持
-... ...
-
-## 技术、教学支持
-
-由于个人时间暂时有限，关于Spring、Vue、webpack等所有的核心的议题内容非常庞大，因此我将以以下形式来回答和解释关于本项目Demo问题：
-
-1. 以Github Issue的形式进行提问
-2. 电子邮件的形式 gubaoer@hotmail.com
-3. QQ群：315308272
-
-## 相关项目
-
-- [Sanic-Vue for Python](https://github.com/boylegu/SanicCRUD-vue)
 
 
 ## My Final Thoughts
